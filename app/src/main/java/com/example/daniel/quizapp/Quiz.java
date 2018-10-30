@@ -10,11 +10,12 @@ import android.os.Parcelable;
 import java.util.ArrayList;
 
 public class Quiz implements Parcelable {
-
+    private long id;
     private String name;
     private ArrayList<Question> questions = new ArrayList<Question>();
     private int yourPoints = 0;
     private int totalPoints = 0;
+    private String createdBy;
 
     Quiz(){}
 
@@ -23,10 +24,12 @@ public class Quiz implements Parcelable {
     }
 
     public Quiz(Parcel parcel) {
+        this.id = parcel.readLong();
         this.name = parcel.readString();
         parcel.readTypedList(this.questions, Question.CREATOR);
         this.yourPoints = parcel.readInt();
         this.totalPoints = parcel.readInt();
+        this.createdBy = parcel.readString();
 
     }
 
@@ -103,10 +106,12 @@ public class Quiz implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(this.id);
         dest.writeString(this.name);
         dest.writeTypedList(this.questions);
         dest.writeInt(this.yourPoints);
         dest.writeInt(this.totalPoints);
+        dest.writeString(this.createdBy);
     }
 
     // Method to recreate a Question from a Parcel

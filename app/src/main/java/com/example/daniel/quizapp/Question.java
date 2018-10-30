@@ -9,6 +9,7 @@ import android.os.Parcelable;
 
 public class Question implements Parcelable{
 
+    private long id;
     private String question;
     private boolean answer;
     private String hint;
@@ -24,6 +25,7 @@ public class Question implements Parcelable{
     }
 
     public Question(Parcel parcel){
+        this.id = parcel.readLong();
         this.question = parcel.readString();
         this.answer = (parcel.readInt() == 0) ? false :true;
         this.hint = parcel.readString();
@@ -75,7 +77,7 @@ public class Question implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-
+        dest.writeLong(this.id);
         dest.writeString(this.question);
         dest.writeInt(this.answer ? 1 : 0);
         dest.writeString(this.hint);
