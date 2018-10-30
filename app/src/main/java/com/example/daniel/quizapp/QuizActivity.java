@@ -16,46 +16,51 @@ import java.util.HashMap;
 import java.util.zip.Inflater;
 
 public class QuizActivity extends AppCompatActivity {
-    //*********TODO: have to see why i cant send the quiz instead of the questions. Once im done with the functional******************
+
     private Quiz quiz;
-    private ArrayList<Question> questions;
-    private TextView question;
-    private HashMap<String,Boolean> answers = new HashMap<>();
     private ArrayList<Question> wrongAnswers = new ArrayList<>();
     private int index = 0;
-    private int points = 0; // Soon to delete
-    private int totalPoints = 0;// Soon to delete
+    private TextView question;
     private TextView pointsTxt;
+    private TextView quizName;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_quiz);
 
+        quiz = getIntent().getExtras().getParcelable("sampleQuiz");
 
-
-        questions  = getIntent().getParcelableArrayListExtra("runQuiz");
         question = findViewById(R.id.textView);
+
+        System.out.println(quiz.getName());
+
         initQuiz();
     }
 
     public void initQuiz(){
-        for(Question ques: questions){
-            totalPoints+=ques.getPoint();
-        }
-        question.setText(questions.get(0).getQuestion());
+
+
+        question.setText(quiz.getQuestions().get(0).getQuestion());
 
     }
 
 
     public void answered(View v){
+       boolean correct;
        switch (v.getId()){
            case R.id.trueBTN:
-               answers.put(questions.get(index).getQuestion(), true);
+
+               correct = quiz.checkAnswer(index, true);
+               if(!correct)this.wrongAnswers.add(quiz.getQuestions().get(index));
                nextQuestion();
+
                break;
            case R.id.falseBTN:
-               answers.put(questions.get(index).getQuestion(), false);
+               correct = quiz.checkAnswer(index, false);
+               if(!correct)this.wrongAnswers.add(quiz.getQuestions().get(index));
                nextQuestion();
                break;
        }
@@ -64,54 +69,34 @@ public class QuizActivity extends AppCompatActivity {
 
     public void nextQuestion(){
 
-        if(index < questions.size() - 1){
+        if(index < quiz.getQuestions().size() - 1){
             index++;
-            question.setText(questions.get(index).getQuestion());
+            question.setText(quiz.getQuestions().get(index).getQuestion());
         }else{
 
-            setContentView(R.layout.layout_results);
+
             endResults();
         }
 
     }
 
     private void endResults() {
+        setContentView(R.layout.layout_results);
 
-        int[] index = new int[questions.size()];
+        pointsTxt = findViewById(R.id.points);
+        quizName = findViewById(R.id.quizName);
 
-        checkAnswers();
-        displayWrong();
+        quizName.setText(""+quiz.getName());
 
+        String result = quiz.getYourPoints() +" / "+ quiz.getTotalPoints();
+        pointsTxt.setText("You Scored: " + result);
 
-    }
-
-    private void displayWrong() {
-
-        CustomListQuestionAdapter questionList = new CustomListQuestionAdapter(this, this.questions, this.wrongAnswers);
+        CustomListQuestionAdapter questionList = new CustomListQuestionAdapter(this, quiz.getQuestions(), this.wrongAnswers);
         ListView listView = findViewById(R.id.list_results);
         listView.setAdapter(questionList);
 
 
 
     }
-
-    public void checkAnswers(){
-
-        pointsTxt = findViewById(R.id.points);
-
-        for(Question ques: questions){
-            if(ques.getAnswer() == answers.get(ques.getQuestion())){
-                points+=ques.getPoint();
-            }else{
-                wrongAnswers.add(ques);
-            }
-        }
-
-        String result = points+" / "+totalPoints;
-
-        pointsTxt.setText("You Scored: " + result);
-
-    }
-
 
 }

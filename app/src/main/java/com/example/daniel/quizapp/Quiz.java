@@ -16,9 +16,7 @@ public class Quiz implements Parcelable {
     private int yourPoints = 0;
     private int totalPoints = 0;
 
-    Quiz(){
-
-    }
+    Quiz(){}
 
     public Quiz(String name){
         this.setName(name);
@@ -26,15 +24,19 @@ public class Quiz implements Parcelable {
 
     public Quiz(Parcel parcel) {
         this.name = parcel.readString();
+        parcel.readTypedList(this.questions, Question.CREATOR);
+        this.yourPoints = parcel.readInt();
+        this.totalPoints = parcel.readInt();
+
     }
 
 
-    public void checkAnswer(int i, boolean yourAnswer) {
+    public boolean checkAnswer(int i, boolean yourAnswer) {
         if(yourAnswer == this.questions.get(i).getAnswer()) {
             this.yourPoints+=this.questions.get(i).getPoint();
-        }else {
-            //do nothing
+            return true;
         }
+        return false;
     }
 
     //Prints the questions in the arrayList
@@ -102,7 +104,7 @@ public class Quiz implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.name);
-        dest.writeList(this.questions);
+        dest.writeTypedList(this.questions);
         dest.writeInt(this.yourPoints);
         dest.writeInt(this.totalPoints);
     }

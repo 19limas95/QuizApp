@@ -11,16 +11,14 @@ import android.widget.ListView;
 import java.util.ArrayList;
 
 public class DisplayQuestions extends AppCompatActivity {
-    private ArrayList<Question> questions;
+    private Quiz quiz;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_questions);
-        questions  = getIntent().getParcelableArrayListExtra("questions");
-
-        System.out.println("================="+questions+" ==========");
-        CustomListQuestionAdapter listQuestion  = new CustomListQuestionAdapter(this, questions,null);
+        quiz = getIntent().getExtras().getParcelable("Quiz");
+        CustomListQuestionAdapter listQuestion  = new CustomListQuestionAdapter(this, quiz.getQuestions(),null);
         ListView list = findViewById(R.id.list_ques);
         list.setAdapter(listQuestion);
 
@@ -29,8 +27,7 @@ public class DisplayQuestions extends AppCompatActivity {
     public void startQuiz(View v){
 
         Intent intent = new Intent(DisplayQuestions.this, QuizActivity.class);
-
-        intent.putParcelableArrayListExtra("runQuiz", questions);
+        intent.putExtra("sampleQuiz", quiz);
         startActivity(intent);
     }
 }

@@ -70,8 +70,7 @@ public class MainActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(MainActivity.this, DisplayQuestions.class);
                 Quiz quiz = quizzes.get(position);
-                System.out.println("================="+quiz.getQuestions()+" ==========");
-                intent.putParcelableArrayListExtra("questions", quiz.getQuestions());
+                intent.putExtra("Quiz", quiz);
                 startActivity(intent);
             }
         });
